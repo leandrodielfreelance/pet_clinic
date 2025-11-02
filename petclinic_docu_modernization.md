@@ -212,3 +212,31 @@ src/main/java/org/springframework/samples/petclinic/
 4. Migrar dependencias críticas
 
 **Resultado**: Análisis profesional completado con metodología reproducible para clientes reales.
+
+## 🌿 WORKAROUND vs RAMA GIT
+
+### **🚫 POR QUÉ NO RAMA GIT:**
+
+1. **Acceso limitado**: No tenés permisos para crear ramas en repos del cliente
+2. **Overkill**: Para análisis/auditoría, una rama es excesivo
+3. **Merge complicado**: Luego hay que mergear cambios de configuración
+4. **Dependencias**: Requiere todo el flujo Git (push, PR, review)
+
+### **✅ POR QUÉ WORKAROUND:**
+
+1. **Aislamiento**: Cambias solo tu entorno local
+2. **Reversible**: Borrás los archivos y listo
+3. **Rápido**: Sin procesos de Git
+4. **Seguro**: No afectás el repositorio principal
+5. **Flexible**: Probás configuraciones sin comprometer
+
+### **🎯 CUÁNDO USAR CADA UNO:**
+
+| Escenario | Workaround | Rama Git |
+|-----------|------------|----------|
+| **Análisis/Auditoría** | ✅ Ideal | ❌ Excesivo |
+| **Prototipo rápido** | ✅ Perfecto | ❌ Lento |
+| **Desarrollo largo** | ❌ Temporal | ✅ Necesario |
+| **Team collaboration** | ❌ No sirve | ✅ Obligatorio |
+
+**En tu caso:** Solo necesitabas analizar, no desarrollar. Workaround fue la solución óptima.
