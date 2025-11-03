@@ -1,3 +1,73 @@
+#Levantar docker (DB)
+
+Levantar servicio mysql (NOTA: no es necesario en desarrollo o pruebas ya que se usa una DB en memoria por defecto).
+
+docker compose up mysql
+
+# Compilar el proyecto (ya debería estar compilado)
+mvn clean package -DskipTests
+
+# Ejecutar el JAR con Java 8 explícitamente
+/usr/lib/jvm/java-8-openjdk-amd64/bin/java -jar target/spring-petclinic-1.5.1.jar
+
+#SERVICIOS DOCKER:
+
+#levantar servicio docker:
+
+(parados en la carpeta donde esta el docker-compose.yml)
+
+sudo docker compose up 
+
+#bajar servicio:
+
+sudo docker compose stop
+
+## SonarQube:
+
+Credenciales:
+
+admin
+pass
+#Para escanear el codigo:
+
+1. Levantar el servicio en el puerto 9000:
+En la carpeta donde esta el docker-compose.yml de SonarQube hacemos:
+
+sudo docker compose up 
+
+
+2. Escanear codigo para sonarqube
+
+-importante: este comando analiza la RAMA donde estoy parado y saltea los tests.
+
+mvn clean compile sonar:sonar \
+  -Dsonar.projectKey=petclinic-modernization-leandro \
+  -Dsonar.projectName="PetClinic - Rama Modernization (Leandro)" \
+  -Dsonar.sources=src/main/java \
+  -Dsonar.tests=src/test/java \
+  -Dsonar.java.binaries=target/classes \
+  -Dsonar.login=admin \
+  -Dsonar.password=pass \
+  -DskipTests
+
+
+#OTRAS FORMAS:
+
+# Con MAVEN (ESTO NO lee el archivo de .properties):   
+
+mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=pass     <---- El que estoy usando ahora y funciona.
+
+o
+
+#Con Scanner (lee .properties y envía a SonarQube):
+
+sonar-scanner -Dproject.settings=sonar-project-analysis.properties
+
+nota:
+-Si uso sonar-scanner:
+Para cambiar la rama a analizar con sonarqube , editar el archivo de properties, ejemplo : sonar.branch.name=modernization
+(Creo que solo esta disponible en la version de pago)
+
 ## 🔗 CÓMO SE CONECTA SONARQUBE CON LA APP
 
 ### **📁 ARCHIVO DE CONFIGURACIÓN**
@@ -315,3 +385,43 @@ mvn clean compile sonar:sonar \
 
 **Así confirmás que sí está analizando tu rama actual**, aunque diga "master".
 
+## 🔧 SONARQUBE: DETECCIÓN vs CORRECCIÓN
+
+### **❌ LO QUE NO HACE:**
+- **NO corrige** código automáticamente
+- **NO modifica** tus archivos
+- **NO hace refactor** por sí solo
+
+### **✅ LO QUE SÍ HACE:**
+- **DETECTA** problemas (bugs, smells, vulnerabilidades)
+- **EXPLICA** cada issue con ejemplos
+- **SUGIERE** fixes (pero no los aplica)
+- **PRIORIZA** por severidad
+
+## 🛠️ FLUJO DE TRABAJO TÍPICO:
+
+### **1. Analizar issues en SonarQube**
+- Click en proyecto → "Issues"
+- Filtrar por: Blocker, Critical, Major
+- Leer explicación de cada problema
+
+### **2. Corregir manualmente en tu IDE**
+```bash
+# Ejemplo issues comunes:
+- "Remove this unused import" → Borrar import
+- "Use isEmpty() instead of size() == 0" → Refactor código
+- "Add a nested @author tag" → Agregar documentación
+```
+
+### **3. Re-analizar después de correcciones**
+```bash
+mvn sonar:sonar ... (mismo comando)
+```
+
+## 📝 EJEMPLO PRÁCTICO:
+
+**Si SonarQube dice:**
+- `"Vulnerability: Hard-coded password"`
+- **TÚ debes:** Buscar en código y reemplazar por variable de entorno
+
+**SonarQube es como un médico que diagnostica pero no opera.** Tú eres el cirujano.
