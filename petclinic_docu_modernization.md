@@ -240,3 +240,56 @@ src/main/java/org/springframework/samples/petclinic/
 | **Team collaboration** | ❌ No sirve | ✅ Obligatorio |
 
 **En tu caso:** Solo necesitabas analizar, no desarrollar. Workaround fue la solución óptima.
+
+
+## NOTAS
+
+#Levantar docker (DB)
+
+docker compose up mysql
+
+# Compilar el proyecto (ya debería estar compilado)
+mvn clean package -DskipTests
+
+# Ejecutar el JAR con Java 8 explícitamente
+/usr/lib/jvm/java-8-openjdk-amd64/bin/java -jar target/spring-petclinic-1.5.1.jar
+
+
+#git y credenciales
+
+git remote set-url origin https://credencial@github.com/leandrodielfreelance/pet_clinic.git
+
+#SonarQube
+admin
+admin
+
+##Escanear codigo para sonarqube
+
+# Con MAVEN (NO lee el archivo de .properties):   
+
+mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=pass       <---- El que estoy usando ahora y funciona.
+
+o
+
+#Con Scanner (lee .properties y envía a SonarQube):
+
+sonar-scanner -Dproject.settings=sonar-project-analysis.properties
+
+nota:
+-Si uso sonar-scanner:
+Para cambiar la rama a analizar con sonarqube , editar el archivo de properties, ejemplo : sonar.branch.name=modernization (hoy en dia esto funciona solo en la version paga)
+
+-Si uso propiedades en lineas (maven) importante: este comando analiza la RAMA donde estoy parado.
+
+mvn clean compile sonar:sonar \
+  -Dsonar.projectKey=petclinic-modernization-leandro \
+  -Dsonar.projectName="PetClinic - Rama Modernization (Leandro)" \
+  -Dsonar.sources=src/main/java \
+  -Dsonar.tests=src/test/java \
+  -Dsonar.java.binaries=target/classes \
+  -Dsonar.login=admin \
+  -Dsonar.password=pass \
+  -DskipTests
+ 
+  
+  
