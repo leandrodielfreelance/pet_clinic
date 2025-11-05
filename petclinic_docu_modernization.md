@@ -292,4 +292,208 @@ mvn clean compile sonar:sonar \
   -DskipTests
  
   
-  
+  # 🚀 TEMPLATE ESENCIAL - MODERNIZACIÓN SISTEMAS LEGACY
+
+## 📋 **FASE 1: ANÁLISIS INICIAL**
+
+### **1.1 PREPARACIÓN DEL ENTORNO**
+```bash
+# Estructura de workspace
+workspace/
+├── proyecto-legacy/          # Sistema a modernizar
+└── herramientas-analisis/    # SonarQube y herramientas
+```
+
+### **1.2 SONARQUBE - Configuración Rápida**
+```bash
+# Crear carpeta para SonarQube
+mkdir sonarqube-analysis
+cd sonarqube-analysis
+
+# docker-compose.yml (versión estable)
+cat > docker-compose.yml << 'EOF'
+services:
+  sonarqube:
+    image: sonarqube:9.6-community
+    container_name: sonarqube-analysis
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+EOF
+
+# Iniciar SonarQube
+docker compose up -d
+```
+
+### **1.3 CONFIGURACIÓN ANÁLISIS PROYECTO**
+```bash
+# Desde el proyecto legacy
+cd proyecto-legacy
+
+# Crear configuración SonarQube (sin modificar original)
+cp sonar-project.properties sonar-project-analysis.properties
+
+# Configuración esencial
+cat > sonar-project-analysis.properties << 'EOF'
+sonar.projectKey=proyecto-legacy-modernizacion
+sonar.projectName=Proyecto Legacy - Análisis Modernización
+sonar.projectVersion=1.0
+
+sonar.sources=src/main/java
+sonar.tests=src/test/java
+sonar.java.binaries=target/classes
+sonar.java.libraries=target/dependency/*.jar
+
+sonar.language=java
+sonar.sourceEncoding=UTF-8
+sonar.host.url=http://localhost:9000
+EOF
+```
+
+## 🔍 **FASE 2: EJECUCIÓN Y DETECCIÓN**
+
+### **2.1 ANÁLISIS INICIAL**
+```bash
+# Compilar y analizar (saltar tests si fallan)
+mvn clean compile sonar:sonar \
+  -Dproject.settings=sonar-project-analysis.properties \
+  -Dsonar.login=admin \
+  -Dsonar.password=TU_PASSWORD \
+  -DskipTests
+```
+
+### **2.2 DETECCIÓN DE PATRONES CRÍTICOS**
+```bash
+# Comandos para detectar problemas comunes
+grep -r "@Valid.*Entity" src/main/java/          # Entidades expuestas
+grep -r "@Autowired" src/main/java/              # Inyección incorrecta
+grep -r "password.*=" src/main/java/             # Secrets en código
+grep -r "\"SELECT.*+" src/main/java/             # SQL concatenado
+```
+
+## 🎯 **FASE 3: HALLAZGOS PRIORITARIOS**
+
+### **3.1 TOP 3 CRÍTICOS A BUSCAR**
+
+#### **🔴 CRÍTICO 1: Seguridad - Entidades Expuestas**
+```java
+// ❌ PATRÓN PELIGROSO
+@PostMapping("/entidad")
+public String crear(@Valid Entidad entidad)
+
+// ✅ SOLUCIÓN
+@PostMapping("/entidad")  
+public String crear(@Valid EntidadDTO entidadDTO)
+```
+
+#### **🔴 CRÍTICO 2: Tests Inefectivos**
+```java
+// ❌ TEST SIN VALIDACIÓN
+@Test
+public void test() {
+    servicio.ejecutar() // Sin assertions
+}
+
+// ✅ TEST CON VALIDACIÓN
+@Test
+public void test() {
+    Resultado resultado = servicio.ejecutar()
+    assertNotNull(resultado)
+    assertFalse(resultado.estaVacio())
+}
+```
+
+#### **🔴 CRÍTICO 3: Acoplamiento Spring**
+```java
+// ❌ DIFÍCIL DE TESTEAR
+@Autowired
+private Servicio servicio
+
+// ✅ FÁCIL DE TESTEAR
+private final Servicio servicio
+public MiClase(Servicio servicio) {
+    this.servicio = servicio
+}
+```
+
+### **3.2 CHECKLIST EVALUACIÓN RÁPIDA**
+- [ ] **Seguridad**: ¿Entidades expuestas en controllers?
+- [ ] **Tests**: ¿Cobertura > 70%? ¿Tests con assertions?
+- [ ] **Arquitectura**: ¿Constructor injection? ¿Servicios separados?
+- [ ] **Configuración**: ¿Secrets externalizados?
+- [ ] **Calidad**: ¿Deuda técnica < 8 horas?
+
+## 📊 **FASE 4: DIAGNÓSTICO Y DOCUMENTACIÓN**
+
+### **4.1 PLANTILLA DIAGNÓSTICO**
+```markdown
+# DIAGNÓSTICO INICIAL - [NOMBRE PROYECTO]
+
+## 📊 MÉTRICAS PRINCIPALES
+- **Deuda Técnica**: X horas
+- **Vulnerabilidades**: X (Rating: X)
+- **Code Smells**: X (Rating: X)  
+- **Cobertura Tests**: X%
+
+## 🎯 HALLAZGOS PRINCIPALES
+1. **[CRÍTICO] Seguridad**: X vulnerabilidades por [patrón específico]
+2. **[ALTO] Tests**: X% cobertura, tests sin assertions
+3. **[MEDIO] Arquitectura**: [patrón problemático específico]
+
+## 🚀 RECOMENDACIONES INMEDIATAS
+1. **Prioridad Alta**: [acción específica]
+2. **Prioridad Media**: [acción específica]  
+3. **Prioridad Baja**: [acción específica]
+```
+
+### **4.2 SCRIPTS AUTOMÁTICOS**
+```bash
+#!/bin/bash
+# detectar-problemas.sh
+echo "🔍 ANALIZANDO PATRONES LEGACY..."
+
+echo "1. Entidades expuestas:"
+grep -r "@Valid.*Entity" src/main/java/ | wc -l
+
+echo "2. Inyección @Autowired:"
+grep -r "@Autowired" src/main/java/ | wc -l
+
+echo "3. Secrets en código:"
+grep -r "password.*=" src/main/java/ | wc -l
+
+echo "✅ ANÁLISIS COMPLETADO"
+```
+
+## 🔄 **FASE 5: PLAN DE ACCIÓN**
+
+### **5.1 SPRINT MODERNIZACIÓN (7 DÍAS)**
+```markdown
+## SEMANA 1 - FUNDAMENTOS
+- **Día 1**: Análisis inicial y métricas
+- **Día 2**: Corrección seguridad crítica (DTOs)
+- **Día 3**: Mejora arquitectura (constructor injection)
+- **Día 4**: Tests básicos funcionando
+- **Día 5**: Externalización configuración
+- **Día 6**: Refactor patrones repetitivos  
+- **Día 7**: Verificación y documentación
+```
+
+### **5.2 MÉTRICAS DE ÉXITO**
+- **✅ Seguridad**: 0 vulnerabilidades críticas
+- **✅ Tests**: > 50% cobertura
+- **✅ Calidad**: Rating A/B en SonarQube
+- **✅ Mantenibilidad**: Deuda técnica < 4 horas
+
+---
+
+**¿Te sirve esta estructura como base?** Podemos ir agregando cada fase con más detalle según avancemos con PetClinic.
