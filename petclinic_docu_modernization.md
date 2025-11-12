@@ -1,3 +1,5 @@
+
+
  No necesitás MySQL con Docker.** El PetClinic usa base de datos en memoria por defecto. Aquí tienes el resumen completo en español:
 
 ## 📋 RESUMEN ESENCIAL DEL SPRING PETCLINIC
