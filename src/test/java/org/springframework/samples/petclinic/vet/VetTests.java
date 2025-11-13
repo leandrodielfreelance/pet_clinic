@@ -15,11 +15,10 @@
  */
 package org.springframework.samples.petclinic.vet;
 
-import org.junit.Test;
-
-import org.springframework.util.SerializationUtils;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+import org.springframework.util.SerializationUtils;
 
 /**
  * @author Dave Syer
@@ -34,7 +33,7 @@ public class VetTests {
         vet.setLastName("Beeblebrox");
         vet.setId(123);
         Vet other = (Vet) SerializationUtils
-                .deserialize(SerializationUtils.serialize(vet));
+            .deserialize(SerializationUtils.serialize(vet));
         assertThat(other.getFirstName()).isEqualTo(vet.getFirstName());
         assertThat(other.getLastName()).isEqualTo(vet.getLastName());
         assertThat(other.getId()).isEqualTo(vet.getId());

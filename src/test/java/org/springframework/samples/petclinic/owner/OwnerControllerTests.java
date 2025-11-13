@@ -16,9 +16,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerController;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -70,7 +67,7 @@ public class OwnerControllerTests {
             .param("city", "London")
             .param("telephone", "01316761638")
         )
-            .andExpect(status().is3xxRedirection());
+        .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -80,7 +77,7 @@ public class OwnerControllerTests {
             .param("lastName", "Bloggs")
             .param("city", "London")
         )
-            .andExpect(status().isOk())
+        .andExpect(status().isOk())
             .andExpect(model().attributeHasErrors("owner"))
             .andExpect(model().attributeHasFieldErrors("owner", "address"))
             .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
@@ -109,7 +106,7 @@ public class OwnerControllerTests {
         mockMvc.perform(get("/owners")
             .param("lastName", "Franklin")
         )
-            .andExpect(status().is3xxRedirection())
+        .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/owners/" + TEST_OWNER_ID));
     }
 
@@ -118,7 +115,7 @@ public class OwnerControllerTests {
         mockMvc.perform(get("/owners")
             .param("lastName", "Unknown Surname")
         )
-            .andExpect(status().isOk())
+        .andExpect(status().isOk())
             .andExpect(model().attributeHasFieldErrors("owner", "lastName"))
             .andExpect(model().attributeHasFieldErrorCode("owner", "lastName", "notFound"))
             .andExpect(view().name("owners/findOwners"));
@@ -146,7 +143,7 @@ public class OwnerControllerTests {
             .param("city", "London")
             .param("telephone", "01616291589")
         )
-            .andExpect(status().is3xxRedirection())
+        .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/owners/{ownerId}"));
     }
 
@@ -157,7 +154,7 @@ public class OwnerControllerTests {
             .param("lastName", "Bloggs")
             .param("city", "London")
         )
-            .andExpect(status().isOk())
+        .andExpect(status().isOk())
             .andExpect(model().attributeHasErrors("owner"))
             .andExpect(model().attributeHasFieldErrors("owner", "address"))
             .andExpect(model().attributeHasFieldErrors("owner", "telephone"))

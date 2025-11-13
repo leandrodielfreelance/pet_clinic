@@ -13,9 +13,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.samples.petclinic.owner.Pet;
-import org.springframework.samples.petclinic.owner.PetRepository;
-import org.springframework.samples.petclinic.owner.VisitController;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -58,7 +55,7 @@ public class VisitControllerTests {
             .param("name", "George")
             .param("description", "Visit Description")
         )
-            .andExpect(status().is3xxRedirection())
+        .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/owners/{ownerId}"));
     }
 
@@ -67,7 +64,7 @@ public class VisitControllerTests {
         mockMvc.perform(post("/owners/*/pets/{petId}/visits/new", TEST_PET_ID)
             .param("name", "George")
         )
-            .andExpect(model().attributeHasErrors("visit"))
+        .andExpect(model().attributeHasErrors("visit"))
             .andExpect(status().isOk())
             .andExpect(view().name("pets/createOrUpdateVisitForm"));
     }

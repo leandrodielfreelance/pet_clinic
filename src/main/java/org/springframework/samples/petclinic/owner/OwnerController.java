@@ -26,9 +26,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Map;
+import javax.validation.Valid;
 
 /**
  * @author Juergen Hoeller

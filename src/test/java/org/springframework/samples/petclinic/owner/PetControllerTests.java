@@ -16,13 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
-import org.springframework.samples.petclinic.owner.Pet;
-import org.springframework.samples.petclinic.owner.PetController;
-import org.springframework.samples.petclinic.owner.PetRepository;
-import org.springframework.samples.petclinic.owner.PetType;
-import org.springframework.samples.petclinic.owner.PetTypeFormatter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -34,8 +27,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = PetController.class,
     includeFilters = @ComponentScan.Filter(
-                            value = PetTypeFormatter.class,
-                            type = FilterType.ASSIGNABLE_TYPE))
+        value = PetTypeFormatter.class,
+        type = FilterType.ASSIGNABLE_TYPE))
 public class PetControllerTests {
 
     private static final int TEST_OWNER_ID = 1;
@@ -77,7 +70,7 @@ public class PetControllerTests {
             .param("type", "hamster")
             .param("birthDate", "2015-02-12")
         )
-            .andExpect(status().is3xxRedirection())
+        .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/owners/{ownerId}"));
     }
 
@@ -87,7 +80,7 @@ public class PetControllerTests {
             .param("name", "Betty")
             .param("birthDate", "2015-02-12")
         )
-            .andExpect(model().attributeHasNoErrors("owner"))
+        .andExpect(model().attributeHasNoErrors("owner"))
             .andExpect(model().attributeHasErrors("pet"))
             .andExpect(model().attributeHasFieldErrors("pet", "type"))
             .andExpect(model().attributeHasFieldErrorCode("pet", "type", "required"))
@@ -110,7 +103,7 @@ public class PetControllerTests {
             .param("type", "hamster")
             .param("birthDate", "2015-02-12")
         )
-            .andExpect(status().is3xxRedirection())
+        .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/owners/{ownerId}"));
     }
 
@@ -120,7 +113,7 @@ public class PetControllerTests {
             .param("name", "Betty")
             .param("birthDate", "2015/02/12")
         )
-            .andExpect(model().attributeHasNoErrors("owner"))
+        .andExpect(model().attributeHasNoErrors("owner"))
             .andExpect(model().attributeHasErrors("pet"))
             .andExpect(status().isOk())
             .andExpect(view().name("pets/createOrUpdatePetForm"));
